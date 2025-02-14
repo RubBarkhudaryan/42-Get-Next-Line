@@ -3,29 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rbarkhud <rbarkhud@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rbarkhud <rbarkhud@student.42yerevan.am    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/12 16:00:25 by rbarkhud          #+#    #+#             */
-/*   Updated: 2025/02/13 18:48:59 by rbarkhud         ###   ########.fr       */
+/*   Created: 2025/02/14 16:08:02 by rbarkhud          #+#    #+#             */
+/*   Updated: 2025/02/14 16:08:02 by rbarkhud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
-
 # define GET_NEXT_LINE_H
-# define BUFFER_SIZE 1
 
-struct	vector_
-{
-	char	*str;
-	int		size;
-	int		capacity;
+# include <stdlib.h>
+# include <fcntl.h>
+# include <unistd.h>
 
-} vector;
+# ifndef BUFF_SIZE
+#  define BUFF_SIZE 10
+# endif
 
-vector	__constructor__();
-void	push_back(vector &vct, char c);
-void	resize(vector &vct, int new_size);
-void	reserve(vector &vct, int capacity);
+char	*get_next_line(int fd);
+char	*ft_strchr(const char *s, int c);
+char	*ft_substr(char const *s, unsigned int start, size_t len);
+char	*ft_strdup(const char *str);
+char	*ft_strjoin(char const *s1, char const *s2);
+size_t	ft_strlen(const char *s);
 
 #endif
