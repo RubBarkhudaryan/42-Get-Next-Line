@@ -5,94 +5,73 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: rbarkhud <rbarkhud@student.42yerevan.am    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/14 18:35:44 by rbarkhud          #+#    #+#             */
-/*   Updated: 2025/02/14 18:35:44 by rbarkhud         ###   ########.fr       */
+/*   Created: 2025/02/14 23:41:13 by rbarkhud          #+#    #+#             */
+/*   Updated: 2025/02/14 23:41:13 by rbarkhud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <stdio.h>
 
-static int	read_from_file(int fd, char **tmp, char *buff)
+static char	*parse_buff(char **buffer)
 {
-	int		bytes_read;
+	char	*new_line_pos;
 	char	*temp;
-
-	bytes_read = read(fd, buff, BUFF_SIZE);
-	if (bytes_read < 0)
-		return (-1);
-	buff[bytes_read] = '\0';
-	temp = ft_strjoin(*tmp, buff);
-	free(*tmp);
-	*tmp = temp;
-	return (bytes_read);
-}
-
-static char	*extract_line(char **tmp)
-{
-	char	*newline_pos;
 	char	*line;
-	char	*temp;
 
-	newline_pos = ft_strchr(*tmp, '\n');
-	if (newline_pos)
+	if (!(*buffer) || !**buffer)
+		return (NULL);
+	new_line_pos = ft_strchr(*buffer, '\n');
+	if (new_line_pos)
 	{
-		line = ft_substr(*tmp, 0, newline_pos - *tmp);
-		temp = ft_strdup(newline_pos + 1);
-		free(*tmp);
-		*tmp = temp;
+		line = ft_substr(*buffer, 0, new_line_pos - *buffer + 1);
+		temp = ft_strdup(new_line_pos + 1);
+		free(*buffer);
+		*buffer = temp;
 	}
 	else
 	{
-		line = ft_strdup(*tmp);
-		free(*tmp);
-		*tmp = NULL;
+		line = ft_strdup(*buffer);
+		free(*buffer);
+		*buffer = NULL;
 	}
 	return (line);
 }
 
-char	*read_line(int fd, char **tmp)
+static char	*read_line(int fd, char *tmp)
 {
-	char	*buff;
+	char	temp[BUFF_SIZE + 1];
+	char	*line;
 	int		bytes_read;
-	char	*newline_pos;
 
-	buff = (char *)malloc(BUFF_SIZE + 1);
-	if (!buff)
+	line = ft_strdup("");
+	if (!line)
 		return (NULL);
-	bytes_read = 1;
-	newline_pos = ft_strchr(*tmp, '\n');
-	while (!(newline_pos) && bytes_read > 0)
+	while (!ft_strchr(tmp, '\n'))
 	{
-		bytes_read = read_from_file(fd, tmp, buff);
-		if (bytes_read < 0)
+		bytes_read = read(fd, temp, BUFF_SIZE);
+		if (bytes_read <= 0)
 		{
-			free(buff);
+			if (tmp && *tmp)
+				return (tmp);
 			return (NULL);
 		}
-		newline_pos = ft_strchr(*tmp, '\n');
+		temp[bytes_read] = '\0';
+		line = ft_strjoin(tmp, temp);
+		free(tmp);
+		tmp = line;
 	}
-	free(buff);
-	if (bytes_read <= 0 && !*tmp)
-		return (NULL);
-	return (extract_line(tmp));
+	return (tmp);
 }
 
 char	*get_next_line(int fd)
 {
 	static char	*tmp = NULL;
-	char		*line;
 
-	if (fd < 0 || BUFF_SIZE <= 0)
+	if (fd <= 0 || BUFF_SIZE <= 0)
 		return (NULL);
 	if (!tmp)
 		tmp = ft_strdup("");
-	if (!tmp)
-		return (NULL);
-	line = read_line(fd, &tmp);
-	if (!line)
-	{
-		free(tmp);
-		tmp = NULL;
-	}
-	return (line);
+	tmp = read_line(fd, tmp);
+	return (parse_buff(&tmp));
 }
