@@ -58,12 +58,19 @@ char	*ft_strchr(const char *str, int c)
 	return (NULL);
 }
 
-char	*ft_strjoin(const char *str1, const char *str2)
+char	*ft_strjoin(char *str1, char *str2)
 {
 	int		i;
 	int		j;
 	char	*new_str;
 
+	if (!str1)
+	{
+		str1 = (char *)malloc(1);
+		if (!str1)
+			return (NULL);
+		str1[0] = '\0';
+	}
 	if (!str1 || !str2)
 		return (NULL);
 	new_str = (char *)malloc(ft_strlen(str1) + ft_strlen(str2) + 1);

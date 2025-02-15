@@ -13,65 +13,73 @@
 #include "get_next_line.h"
 #include <stdio.h>
 
-static char	*parse_buff(char **buffer)
+static char	*parse_buff(char** clean_line, char *tmp)
 {
 	char	*new_line_pos;
 	char	*temp;
-	char	*line;
 
-	if (!(*buffer) || !**buffer)
-		return (NULL);
-	new_line_pos = ft_strchr(*buffer, '\n');
+	new_line_pos = ft_strchr(tmp, '\n');
 	if (new_line_pos)
 	{
-		line = ft_substr(*buffer, 0, new_line_pos - *buffer + 1);
+		if (*clean_line)
+			*clean_line = ft_strjoin(*clean_line, ft_substr(tmp, 0, new_line_pos - tmp + 1));
+		else
+		{
+			*clean_line = ft_substr(tmp, 0, new_line_pos - tmp + 1);
+			printf("%s\n", *clean_line);
+		}
 		temp = ft_strdup(new_line_pos + 1);
-		free(*buffer);
-		*buffer = temp;
+		free(tmp);
+		tmp = temp;
 	}
 	else
 	{
-		line = ft_strdup(*buffer);
-		free(*buffer);
-		*buffer = NULL;
+		*clean_line = ft_strjoin(*clean_line, tmp);
+		free(tmp);
+		tmp = NULL;
 	}
-	return (line);
+	return (tmp);
 }
 
 static char	*read_line(int fd, char *tmp)
 {
-	char	temp[BUFF_SIZE + 1];
-	char	*line;
-	int		bytes_read;
+	char	*buff;
+	int		size;
 
-	line = ft_strdup("");
-	if (!line)
-		return (NULL);
-	while (!ft_strchr(tmp, '\n'))
+	buff = (char *)malloc(BUFFER_SIZE + 1);
+	size = 1;
+	while (size > 0 && !ft_strchr(buff, '\n'))
 	{
-		bytes_read = read(fd, temp, BUFF_SIZE);
-		if (bytes_read <= 0)
+		size = read(fd, buff, BUFFER_SIZE);
+		if (size == 0)
 		{
-			if (tmp && *tmp)
-				return (tmp);
+			free(buff);
+			return (tmp);
+		}
+		if (size < 0)
+		{
+			free(tmp);
+			free(buff);
 			return (NULL);
 		}
-		temp[bytes_read] = '\0';
-		line = ft_strjoin(tmp, temp);
-		free(tmp);
-		tmp = line;
+		buff[size] = '\0';
+		tmp = ft_strjoin(tmp, buff);
 	}
+	free(buff);
 	return (tmp);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*tmp = NULL;
+	char		*line;
+	static char	*tmp;
 
-	if (fd <= 0 || BUFF_SIZE <= 0)
+	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	if (!tmp)
-		tmp = ft_strdup("");
+	line = NULL;
 	tmp = read_line(fd, tmp);
-	return (parse_buff(&tmp));
+	if (!tmp)
+		return (NULL);
+	tmp = parse_buff(&line, tmp);
+	return (line);
 }
