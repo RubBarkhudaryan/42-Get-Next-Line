@@ -12,7 +12,7 @@
 
 #include "get_next_line.h"
 
-static void	parse_buff(char** clean_line, char **tmp)
+static void	parse_buff(char **clean_line, char **tmp)
 {
 	char	*new_line_pos;
 	char	*temp;
@@ -21,7 +21,8 @@ static void	parse_buff(char** clean_line, char **tmp)
 	if (new_line_pos)
 	{
 		if (*clean_line)
-			*clean_line = ft_strjoin(*clean_line, ft_substr(*tmp, 0, new_line_pos - *tmp + 1));
+			*clean_line = ft_strjoin(*clean_line, \
+			ft_substr(*tmp, 0, new_line_pos - *tmp + 1));
 		else
 			*clean_line = ft_substr(*tmp, 0, new_line_pos - *tmp + 1);
 		if (*(new_line_pos + 1))

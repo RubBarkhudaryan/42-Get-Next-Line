@@ -42,7 +42,7 @@ size_t	ft_strlen(const char *str)
 	return (i);
 }
 
-char *ft_strchr(const char *str, int c)
+char	*ft_strchr(const char *str, int c)
 {
 	if (!str)
 		return (NULL);
@@ -56,7 +56,6 @@ char *ft_strchr(const char *str, int c)
 		return ((char *)str);
 	return (NULL);
 }
-
 
 char	*ft_strjoin(char *str1, char *str2)
 {
