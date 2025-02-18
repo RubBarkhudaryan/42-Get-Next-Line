@@ -42,21 +42,21 @@ size_t	ft_strlen(const char *str)
 	return (i);
 }
 
-char	*ft_strchr(const char *str, int c)
+char *ft_strchr(const char *str, int c)
 {
-	int	pos;
-
-	pos = 0;
-	while (str[pos])
+	if (!str)
+		return (NULL);
+	while (*str)
 	{
-		if ((unsigned char)c == str[pos])
-			return ((char *)(str + pos));
-		++pos;
+		if (*str == (char)c)
+			return ((char *)str);
+		++str;
 	}
-	if ((unsigned char)c == '\0')
-		return ((char *)(str + pos));
+	if (c == '\0')
+		return ((char *)str);
 	return (NULL);
 }
+
 
 char	*ft_strjoin(char *str1, char *str2)
 {
@@ -71,25 +71,19 @@ char	*ft_strjoin(char *str1, char *str2)
 			return (NULL);
 		str1[0] = '\0';
 	}
-	if (!str1 || !str2)
+	if (!str2)
 		return (NULL);
 	new_str = (char *)malloc(ft_strlen(str1) + ft_strlen(str2) + 1);
 	if (!new_str)
 		return (NULL);
-	i = 0;
-	while (str1[i])
-	{
+	i = -1;
+	while (str1[++i])
 		new_str[i] = str1[i];
-		++i;
-	}
-	j = 0;
-	while (str2[j])
-	{
+	j = -1;
+	while (str2[++j])
 		new_str[i + j] = str2[j];
-		++j;
-	}
 	new_str[i + j] = '\0';
-	return (new_str);
+	return (free(str1), new_str);
 }
 
 char	*ft_substr(char const *str, unsigned int start, size_t len)
