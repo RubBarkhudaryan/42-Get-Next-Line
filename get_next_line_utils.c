@@ -66,9 +66,9 @@ char	*ft_strjoin(char *str1, char *str2)
 	if (!str1 && !str2)
 		return (NULL);
 	if (!str1)
-		return (ft_substr(str2,0,ft_strlen(str2)));
+		return (ft_substr(str2, 0, ft_strlen(str2)));
 	if (!str2)
-		return (ft_substr(str1,0,ft_strlen(str1)));
+		return (ft_substr(str1, 0, ft_strlen(str1)));
 	new_str = (char *)malloc(ft_strlen(str1) + ft_strlen(str2) + 1);
 	if (!new_str)
 		return (NULL);
